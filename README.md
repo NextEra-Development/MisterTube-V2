@@ -40,7 +40,7 @@ Manifest V2 builds are not installable from addons.mozilla.org until this extens
 
 > Temporary add-ons are removed when Firefox restarts. For a permanent install, sign a `.xpi` with your own keys and install it permanently, or install from the release page if/when one is published.
 >
-> Works in **Firefox ≥ 57** and Manifest V2-compatible forks. Chromium browsers load the Manifest V3 edition instead (upstream sibling repo).
+> Works in **Firefox ≥ 57** and Manifest V2-compatible forks.
 
 ---
 
