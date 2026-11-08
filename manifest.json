@@ -1,23 +1,27 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "MisterTube",
   "version": "1.0.2",
   "description": "Enhanced YouTube experience with history management and UI improvements",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{89a35dee-43b4-43ca-b381-f4c4105ba303}",
+      "strict_min_version": "57.0"
+    }
+  },
   "icons": {
     "16": "icons/icon16.png",
     "32": "icons/icon32.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "action": {
+  "browser_action": {
     "default_icon": "icons/icon48.png",
     "default_popup": "popup.html"
   },
   "permissions": [
     "storage",
-    "scripting"
-  ],
-  "host_permissions": [
+    "tabs",
     "*://*.youtube.com/*"
   ],
   "content_scripts": [
@@ -35,16 +39,12 @@
     }
   ],
   "web_accessible_resources": [
-    {
-      "resources": [
-        "icons/*.png"
-      ],
-      "matches": [
-        "*://*.youtube.com/*"
-      ]
-    }
+    "icons/*.png"
   ],
   "background": {
-    "service_worker": "background.js"
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": true
   }
 }

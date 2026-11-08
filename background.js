@@ -50,44 +50,58 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 // Open the history page and clear it once it has finished loading.
-// Reports the final outcome via done(result) instead of only logging.
+// MV2 has no chrome.scripting.executeScript({func}) and no reliable cross-context promise
+// results, so the injected page function reports back via a historyClearResult message.
 function clearWatchHistory(done) {
+    let tabId = null;
+    let settled = false;
+    const finish = (result) => {
+        if (settled) return;
+        settled = true;
+        chrome.runtime.onMessage.removeListener(onClearResult);
+        clearTimeout(guard);
+        if (result && result.ok && tabId !== null) {
+            chrome.tabs.remove(tabId, () => void chrome.runtime.lastError);
+        } else {
+            console.warn('MisterTube: history not cleared:', result && result.reason ? result.reason : 'unknown reason');
+        }
+        done(result);
+    };
+    const onClearResult = (request, sender) => {
+        if (!request || request.action !== 'historyClearResult') return false;
+        if (sender && sender.tab && tabId !== null && sender.tab.id !== tabId) return false;
+        finish(request.result || { ok: false, reason: 'unknown' });
+        return false;
+    };
+    chrome.runtime.onMessage.addListener(onClearResult);
+    const guard = setTimeout(() => finish({ ok: false, reason: 'page-timeout' }), 60000);
+
     try {
         chrome.tabs.create({ url: 'https://www.youtube.com/feed/history' }, (tab) => {
             if (chrome.runtime.lastError || !tab || tab.id === undefined) {
                 console.warn('MisterTube: could not open history tab:', chrome.runtime.lastError && chrome.runtime.lastError.message);
-                done({ ok: false, reason: 'tab-create-failed' });
+                finish({ ok: false, reason: 'tab-create-failed' });
                 return;
             }
+            tabId = tab.id;
             waitForTabComplete(tab.id, 20000).then((completed) => {
                 if (!completed) {
                     console.warn('MisterTube: history tab never finished loading; leaving it open');
-                    done({ ok: false, reason: 'load-timeout' });
+                    finish({ ok: false, reason: 'load-timeout' });
                     return;
                 }
-                chrome.scripting.executeScript({
-                    target: { tabId: tab.id },
-                    func: clearHistoryInPage
-                }, (results) => {
+                chrome.tabs.executeScript(tab.id, { code: '(' + clearHistoryInPage.toString() + ')();' }, () => {
                     if (chrome.runtime.lastError) {
                         console.warn('MisterTube: history clear script failed:', chrome.runtime.lastError.message);
-                        done({ ok: false, reason: 'script-failed' });
-                        return;
+                        finish({ ok: false, reason: 'script-failed' });
                     }
-                    const result = results && results[0] && results[0].result;
-                    if (result && result.ok) {
-                        chrome.tabs.remove(tab.id, () => void chrome.runtime.lastError);
-                        done({ ok: true });
-                    } else {
-                        console.warn('MisterTube: history not cleared:', result && result.reason ? result.reason : 'unknown reason');
-                        done(result && result.ok === false ? result : { ok: false, reason: 'unknown' });
-                    }
+                    // success/failure arrives later via historyClearResult
                 });
-            }).catch(() => done({ ok: false, reason: 'exception' }));
+            }).catch(() => finish({ ok: false, reason: 'exception' }));
         });
     } catch (error) {
         console.warn('MisterTube: clearWatchHistory failed:', error);
-        done({ ok: false, reason: 'exception' });
+        finish({ ok: false, reason: 'exception' });
     }
 }
 
@@ -131,7 +145,13 @@ function waitForTabComplete(tabId, timeoutMs) {
 // Runs inside the history page: clicks the clear button, then the confirm dialog.
 // Self-contained (injected into the tab, no closure over this file's scope).
 // Never clicks blindly: the confirm click only happens when an open dialog is present.
+// Reports the outcome to the background page via historyClearResult.
 async function clearHistoryInPage() {
+    const report = (result) => {
+        try {
+            chrome.runtime.sendMessage({ action: 'historyClearResult', result });
+        } catch (error) { /* extension context invalidated */ }
+    };
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     const pollFor = async (find, timeoutMs) => {
         const deadline = Date.now() + timeoutMs;
@@ -191,15 +211,15 @@ async function clearHistoryInPage() {
     };
 
     const clearBtn = await pollFor(findClearButton, 20000);
-    if (!clearBtn) return { ok: false, reason: 'clear-button-not-found' };
+    if (!clearBtn) { report({ ok: false, reason: 'clear-button-not-found' }); return; }
     clearBtn.click();
 
     const dialog = await pollFor(findConfirmDialog, 10000);
-    if (!dialog) return { ok: false, reason: 'no-confirm-dialog' };
+    if (!dialog) { report({ ok: false, reason: 'no-confirm-dialog' }); return; }
     const confirmBtn = findConfirmButton(dialog);
-    if (!confirmBtn) return { ok: false, reason: 'confirm-button-not-found' };
+    if (!confirmBtn) { report({ ok: false, reason: 'confirm-button-not-found' }); return; }
     // Final guard: dialog must still be open and visible at the click site
-    if (!isVisible(dialog)) return { ok: false, reason: 'dialog-closed' };
+    if (!isVisible(dialog)) { report({ ok: false, reason: 'dialog-closed' }); return; }
     confirmBtn.click();
-    return { ok: true };
+    report({ ok: true });
 }
