@@ -8,7 +8,6 @@
         PIP_CONTAINER: 'div#pip-container'
     };
 
-    const STYLE_URL = chrome.runtime.getURL('styles.css');
     const READY_TIMEOUT = 15000;
     const NAVIGATE_DEBOUNCE = 300;
 
@@ -89,13 +88,17 @@
     }
 
     function injectStyles() {
-        // Prevent duplicate style injection
-        if (document.querySelector(`link[href="${STYLE_URL}"]`)) return;
-
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = STYLE_URL;
-        (document.head || document.documentElement).appendChild(link);
+        // Page-context <link href="chrome-extension://..."> is blocked by YouTube's CSP;
+        // ask the background worker to insert the stylesheet via the extension engine.
+        try {
+            chrome.runtime.sendMessage({ action: 'insertStyles' }, () => {
+                if (chrome.runtime.lastError) {
+                    console.warn('[MisterTube]', chrome.runtime.lastError.message);
+                }
+            });
+        } catch (error) {
+            console.warn('[MisterTube]', error && error.message ? error.message : error);
+        }
     }
 
     function waitForElement(selector, timeoutMs) {

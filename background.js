@@ -21,6 +21,26 @@ chrome.runtime.onInstalled.addListener(() => {
 
 // Listen for messages from popup or content scripts
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === 'insertStyles') {
+        // Page-context <link href="chrome-extension://...styles.css"> is blocked by YouTube's CSP.
+        // Insert through the extension engine instead.
+        const tabId = sender && sender.tab && sender.tab.id;
+        if (tabId === undefined) {
+            sendResponse({ ok: false, error: 'insertStyles needs a tab' });
+            return false;
+        }
+        try {
+            chrome.scripting.insertCSS({ target: { tabId }, files: ['styles.css'] }, () => {
+                const err = chrome.runtime.lastError;
+                sendResponse(err ? { ok: false, error: err.message } : { ok: true });
+            });
+        } catch (error) {
+            sendResponse({ ok: false, error: String(error) });
+            return false;
+        }
+        return true; // async response
+    }
+
     if (request.action === 'clearHistory') {
         clearWatchHistory((result) => sendResponse(result || { ok: false, reason: 'unknown' }));
         return true; // async response
