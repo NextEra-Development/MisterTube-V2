@@ -24,7 +24,7 @@ assert set(m['permissions']) == {'storage', 'scripting'}, f"unexpected permissio
 assert 'css' not in m['content_scripts'][0], 'content_scripts must not inject styles.css'
 for p in list(m['icons'].values()) + [m['action']['default_icon'], 'icons/trash.png']:
     assert (root / p).exists(), f'missing {p}'
-assert 'styles.css' in m['web_accessible_resources'][0]['resources']
+assert 'styles.css' not in m['web_accessible_resources'][0]['resources'], 'styles.css must be engine-inserted via scripting.insertCSS, not page-linked'
 assert m['background']['service_worker'] == 'background.js'
 print('manifest OK')
 PY
@@ -32,8 +32,35 @@ PY
 grep -q "btn.type = 'button'" content.js && echo "button type OK"
 grep -q 'yt-navigate-finish' content.js && echo "SPA re-run OK"
 grep -q 'onRemoved' background.js && echo "listener cleanup OK"
+grep -q 'insertStyles' background.js && echo "MV3 engine CSS injection OK"
+grep -q 'insertStyles' firefox/background.js && echo "MV2 engine CSS injection OK"
+! grep -q 'getURL(..styles.css..)' content.js && echo "no styles.css from page context OK"
 grep -q 'getManifest().version' popup.js && echo "version from manifest OK"
 if grep -q 'moz-range-thumb' styles.css; then exit 1; else echo "dead CSS removed OK"; fi
 if grep -q '\.footer a' popup.css; then exit 1; else echo "dead footer rules removed OK"; fi
+
+if [ -f firefox/manifest.json ]; then
+    node --check firefox/background.js
+    python3 - <<'PYCHECK'
+import json
+import pathlib
+root = pathlib.Path('.')
+fm = json.loads((root / 'firefox' / 'manifest.json').read_text())
+assert fm['manifest_version'] == 2
+assert fm['background'].get('scripts') == ['background.js']
+assert 'service_worker' not in fm.get('background', {})
+assert 'scripting' not in fm['permissions']
+assert 'host_permissions' not in fm
+assert '*://*.youtube.com/*' in fm['permissions']
+assert 'default_popup' in fm['browser_action']
+assert isinstance(fm['web_accessible_resources'], list) and all(isinstance(r, str) for r in fm['web_accessible_resources'])
+assert fm['browser_specific_settings']['gecko']['id'].startswith('{')
+for p in list(fm['icons'].values()) + [fm['browser_action']['default_icon'], 'background.js']:
+    assert (root / 'firefox' / p).exists(), f'missing firefox/{p}'
+for p in ['content.js', 'popup.js', 'popup.html', 'popup.css', 'styles.css']:
+    assert (root / 'firefox' / p).exists(), f'missing firefox/{p}'
+print('firefox MV2 manifest OK')
+PYCHECK
+fi
 
 echo 'VERIFY PASS'
