@@ -44,17 +44,12 @@ html, body {
     overflow-x: hidden !important;
 }
 
-/* Show mini guide renderer */
-ytd-mini-guide-renderer {
-    display: block !important;
-    visibility: visible !important;
-}
-
-/* Hide unwanted YouTube elements */
+/* Hide unwanted YouTube elements (the mini-guide rail included) */
 ytd-guide-renderer,
 ytd-rich-section-renderer,
 ytd-reel-shelf-renderer,
 ytd-rich-shelf-renderer,
+ytd-mini-guide-renderer,
 #guide,
 #contentContainer,
 #contents-container > .ytd-rich-shelf-renderer.style-scope,
@@ -67,23 +62,10 @@ tp-yt-app-drawer#guide {
     pointer-events: none !important;
 }
 
-/* The drawer (#guide) is position:fixed and off-canvas, so hiding it reserves
-   no layout space. The 72px left offset on the feed is the mini-guide rail
-   reservation and is intentional. */
-
-/* ===== NOTIFICATION BUTTON POSITIONING ===== */
-ytd-mini-guide-entry-renderer:nth-of-type(4) + .ytd-notification-topbar-button-renderer {
-    margin-top: 8px !important;
-    order: 5 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-.ytd-notification-topbar-button-renderer {
-    pointer-events: auto !important;
-    opacity: 1 !important;
-    visibility: visible !important;
+/* The rail is hidden along with the drawer (both position:fixed), so pin the
+   feed to the full width; YouTube would otherwise reserve 72px for the rail. */
+ytd-page-manager {
+    margin-left: 0 !important;
 }
 
 /* ===== PICTURE-IN-PICTURE CUSTOMIZATION ===== */

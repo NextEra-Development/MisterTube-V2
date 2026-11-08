@@ -2,10 +2,9 @@
     'use strict';
 
     const SELECTORS = {
-        SEARCH_CONTAINER: 'form#search-form',
+        // Live YouTube removed form#search-form; the current search UI's row is .ytSearchboxComponentInputBox (yt-searchbox's internal form row)
+        SEARCH_CONTAINER: '.ytSearchboxComponentInputBox, form#search-form, form.ytSearchboxComponentSearchForm',
         VOICE_BUTTON: '#voice-search-button',
-        NOTIFICATION_BUTTON: '.ytd-notification-topbar-button-renderer',
-        TARGET_ENTRY: 'ytd-mini-guide-entry-renderer:nth-of-type(4)',
         PIP_CONTAINER: 'div#pip-container'
     };
 
@@ -145,7 +144,6 @@
             replaceVoiceSearch();
         }
 
-        moveNotificationButton();
     }
 
     function addClearHistoryButton() {
@@ -182,6 +180,7 @@
         btn.style.cssText = `
             margin-left: 10px;
             padding: 5px 10px;
+            flex: 0 0 auto;
             background: ${bgColor || 'transparent'};
             border: none;
             border-radius: 5px;
@@ -230,38 +229,6 @@
             });
         } catch (error) {
             console.warn('[MisterTube]', error.message);
-        }
-    }
-
-    function moveNotificationButton() {
-        // Only schedule the move once
-        if (document.querySelector('.moved-notification-btn')) return;
-
-        // Attempt to move the notification button
-        const moveButton = () => {
-            const notificationBtn = document.querySelector(SELECTORS.NOTIFICATION_BUTTON);
-            const targetEntry = document.querySelector(SELECTORS.TARGET_ENTRY);
-
-            if (!targetEntry || !targetEntry.parentNode) return false;
-
-            if (notificationBtn && !notificationBtn.classList.contains('moved-notification-btn')) {
-                targetEntry.parentNode.insertBefore(notificationBtn, targetEntry.nextSibling);
-                notificationBtn.classList.add('moved-notification-btn');
-                return true;
-            }
-            return false;
-        };
-
-        // Try immediately
-        if (!moveButton()) {
-            // If not successful, retry a few times
-            let attempts = 0;
-            const maxAttempts = 5;
-            const interval = setInterval(() => {
-                if (moveButton() || ++attempts >= maxAttempts) {
-                    clearInterval(interval);
-                }
-            }, 1000);
         }
     }
 
