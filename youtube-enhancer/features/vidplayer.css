@@ -1,0 +1,533 @@
+/* features/vidplayer.css */
+:root {
+  --vidplayZ-primary: var(--enhancer-primary, #60f5ac);
+  --vidplayZ-secondary: var(--enhancer-secondary, #60f5f5);
+  --vidplayZ-background: rgba(0, 0, 0, 0.4);
+  --vidplayZ-radius: var(--border-radius-video, 10px);
+  --vidplayZ-controls-height: 48px;
+  --border-radius: 8px;
+  --vidplayZ-radius-md: 10px;
+  --transition-medium: 0.3s ease;
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #movie_player {
+    width: 100% !important;
+    height: auto !important;
+    /* Give the player a real box: height:auto alone collapsed it to 0px
+       (no min-height band, no dead playlist-page space). */
+    aspect-ratio: 16 / 9 !important;
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .html5-video-container {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    overflow: hidden !important;
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .video-stream {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 10px !important;
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-watch-flexy[theater] #player-theater-container {
+    height: auto !important;
+    max-height: 75vh !important;
+    aspect-ratio: 16 / 9 !important;
+    border-radius: 10px !important;
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .ytp-chrome-bottom {
+    width: 100% !important;
+    border-radius: 0 0 10px 10px !important;
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .ytp-progress-bar-container {
+    width: 100% !important;
+    height: 8px !important;
+    margin: 0 !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    justify-content: center !important;
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .ytp-progress-bar {
+    width: 100% !important;
+    height: 8px !important;
+    border-radius: 10px !important;
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .ytp-scrubber-button {
+    width: 16px !important;
+    height: 16px !important;
+    border-radius: 50% !important;
+    background-color: #ff0000 !important;
+}
+
+/* Overflow/scrollbar must stay visible so the responsive grid can reflow
+   instead of clipping the right edge (see vidplayer.js auto-fit). */
+
+/* Hide YouTube phone/masthead clutter only.
+   Comments, playlist, actions, and the secondary rail are RESTORED
+   below so they load normally (see gated #secondary rule). */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-app #header > ytd-rich-grid-renderer,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-app ytd-mini-guide-renderer,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-rich-section-renderer > ytd-rich-shelf-renderer,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-masthead #end,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-menu-renderer > .yt-spec-icon-shape > div,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #voice-search-button > yt-button-shape,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #guide-button,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #country-code,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #logo-icon > .yt-spec-icon-shape > div,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-merch-shelf-renderer,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-reel-shelf-renderer,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .yt-chip-cloud-renderer,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .YtVideoMetadataCarouselViewModelHost,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .ytd-live-chat-frame > yt-button-shape,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #show-hide-button > .ytd-live-chat-frame,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #creator-heart-button,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #foreground-content,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-reel-shelf-renderer,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-video-description-infocards-section-renderer,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid a.bold.yt-formatted-string,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .ytp-next-button,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .ytp-autonav-toggle-button,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #header-top-row,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .yt-spec-avatar-shape--cairo-refresh,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .YtSearchboxComponentClearButton,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .yt-lockup-view-model-wiz--collection-stack-2 > .yt-lockup-view-model-wiz__content-image > .yt-collection-thumbnail-view-model > .collections-stack-wiz > div > .collections-stack-wiz__collection-stack2 {
+    display: none !important;
+}
+
+/* Un-hide owners / actions / comments / playlist chrome so they load.
+   (Previously removed from the blanket hide above.) */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-video-owner-renderer,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #like-button,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #dislike-button,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #menu > ytd-watch-metadata,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #subscribe-button-shape,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #actions,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #avatar-section,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-comment-view-model,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-comment-simplebox-renderer,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-comments-header-renderer #title,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #pinned-comment-badge,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-comment-view-model #published-time-text,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-comment-replies-renderer,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #comments,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #playlist-actions,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .ytd-playlist-panel-renderer.publisher {
+    display: block !important;
+}
+
+/* Recommendations (#secondary): hidden UNLESS a playlist is active.
+   vidplayer.js toggles body.youtube-enhancer-has-playlist off the list= param. */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid:not(.youtube-enhancer-has-playlist) #secondary,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid:not(.youtube-enhancer-has-playlist) ytd-watch-next-secondary-results-renderer,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid:not(.youtube-enhancer-has-playlist) ytd-watch-next-secondary-results-renderer > ytd-item-section-renderer,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid:not(.youtube-enhancer-has-playlist) ytd-watch-flexy #secondary {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid.youtube-enhancer-has-playlist #secondary {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid.youtube-enhancer-has-playlist ytd-watch-next-secondary-results-renderer {
+    /* Renderer's natural display is block; forcing flex refloows children */
+    display: unset !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+/* Center the primary column when the secondary rail collapses. */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid:not(.youtube-enhancer-has-playlist) ytd-watch-flexy {
+    justify-content: center !important;
+}
+/* Never allow horizontal overflow to create an artificial right-hand gap. */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-watch-flexy,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-rich-grid-renderer #contents {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* VidPlayz - Enhanced Video Player CSS */
+
+/* Make thumbnail overlays semi-transparent */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .ytp-ce-element, 
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .ytp-ce-covering-overlay, 
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .ytp-ce-element-shadow,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .ytp-ce-covering-image,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .ytp-ce-expanding-image,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .ytp-ce-element.ytp-ce-channel.ytp-ce-channel-this,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .ytp-ce-element.ytp-ce-video.ytp-ce-element-show {
+  opacity: 0.4 !important;
+  transition: opacity 0.3s ease !important;
+}
+
+/* Increase opacity on hover */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .ytp-ce-element:hover {
+  opacity: 0.8 !important;
+}
+
+/* Preview thumbnail */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-preview-container {
+  position: absolute;
+  bottom: 50px;
+  padding: 4px;
+  background-color: var(--vidplayZ-background);
+  border-radius: var(--border-radius, 8px);
+  display: none;
+  z-index: 100;
+  pointer-events: none;
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-preview-thumbnail {
+  width: 160px;
+  height: 90px;
+  background-color: #000;
+  border-radius: 4px;
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-preview-timestamp {
+  text-align: center;
+  color: #fff;
+  font-size: 12px;
+  padding: 2px 0;
+}
+
+/* Volume display */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-volume-display {
+  position: absolute;
+  background-color: var(--vidplayZ-background);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 11px;
+  color: #fff;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .ytp-volume-panel:hover .youtube-enhancer-volume-display {
+  opacity: 1;
+}
+
+/* Custom buttons */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-screenshot-button,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-loop-button,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-speed-button {
+  opacity: 0.9;
+  transition: all 0.2s ease !important;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  height: 36px;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-screenshot-button:hover,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-loop-button:hover,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-speed-button:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-screenshot-button svg,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-loop-button svg {
+  fill: #fff;
+  width: 20px;
+  height: 20px;
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-loop-button.active svg {
+  fill: var(--vidplayZ-primary) !important;
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-speed-button span {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-speed-button:hover span {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Speed menu */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-speed-menu {
+  position: fixed;
+  display: none;
+  background-color: var(--vidplayZ-background);
+  border-radius: var(--border-radius, 8px);
+  padding: 8px 0;
+  z-index: 1000;
+  min-width: 100px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-speed-option {
+  padding: 8px 16px;
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-speed-option:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding-left: 20px;
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-speed-option.active {
+  color: var(--vidplayZ-primary);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-speed-option.active::after {
+  content: '✓';
+  margin-left: 8px;
+  color: var(--vidplayZ-primary);
+}
+
+/* Quality badge */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-quality-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: var(--vidplayZ-background);
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+/* Notifications */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-notification {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background-color: var(--vidplayZ-background);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: var(--border-radius, 8px);
+  font-size: 14px;
+  z-index: 9999;
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  border-left: 3px solid var(--vidplayZ-primary);
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-notification.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-notification.error {
+  border-left: 3px solid var(--status-error, #f44336);
+}
+
+/* Video end overlay */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-end-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-replay-button {
+  background-color: var(--vidplayZ-primary);
+  color: #000;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .youtube-enhancer-replay-button:hover {
+  transform: scale(1.05);
+  background-color: var(--vidplayZ-secondary);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .youtube-enhancer-quality-badge {
+    font-size: 10px;
+    padding: 1px 4px;
+  }
+  
+  .youtube-enhancer-notification {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+  
+  .youtube-enhancer-replay-button {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+
+  body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #masthead-container #search-container.ytd-searchbox {
+    max-width: 90%;
+  }
+}
+
+/* Center YouTube search bar */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #masthead-container #search-container.ytd-searchbox {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 640px;
+  width: 100%;
+}
+
+/* Ensure the search input takes appropriate space */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #masthead #search-container.ytd-searchbox #search-form {
+  width: 100%;
+}
+
+/* Ensure avatar and all its components are fully visible */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .page-header-view-model-wiz__page-header-headline-image.yt-decorated-avatar-view-model-wiz,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #avatar-link,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #avatar-section,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .ytd-topbar-menu-button-renderer,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-topbar-menu-button-renderer,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-masthead .ytd-masthead[slot="avatar-button"],
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #avatar,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #img.yt-img-shadow,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #avatar > img,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .yt-img-shadow,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-topbar-menu-button-renderer > .yt-decorated-avatar-view-model-wiz,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #avatar.ytd-masthead {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* Force avatar image to be visible with correct dimensions */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #avatar > img.yt-img-shadow {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+/* Make sure the avatar container is properly sized */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #avatar {
+  width: 32px !important;
+  height: 32px !important;
+  display: block !important;
+  overflow: visible !important;
+}
+
+/* Ensure all parents of avatar are visible */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #buttons.ytd-masthead, 
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #end.ytd-masthead {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Optional: adjust search container positioning on the page */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #masthead #center {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+}
+
+/* Restore thumbnail hover overlay elements */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .ytThumbnailHoverOverlayViewModelHost,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .ytThumbnailHoverOverlayViewModelStyleCover.ytThumbnailHoverOverlayViewModelScrim,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .yt-spec-avatar-shape__button--button-giant.yt-spec-avatar-shape__button.yt-spec-avatar-shape > .yt-spec-avatar-shape--cairo-refresh {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* Enhance hover effects */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .ytThumbnailHoverOverlayViewModelHost {
+  transition: opacity 0.2s ease !important;
+}
+
+/* Perfect video fit in container */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .html5-main-video.video-stream {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  position: relative !important;
+  left: 0 !important;
+  top: 0 !important;
+}
+
+/* Hide rich shelf headers */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #rich-shelf-header,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-rich-shelf-renderer #rich-shelf-header,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #rich-section-header,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid .ytd-rich-shelf-renderer #rich-shelf-header,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-rich-grid-renderer #rich-shelf-header {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+/* No scrollable dead strip at the edges of the player page.
+   The rounded/centered player must never leave an overflow you can scroll
+   into at the bottom-right of the page. */
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid {
+    overflow-x: hidden !important;
+}
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-app,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid ytd-watch-flexy,
+body.youtube-enhancer-enabled.youtube-enhancer-feature-vid #contentContainer {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+    max-width: 100dvw !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+}
