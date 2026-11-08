@@ -36,4 +36,28 @@ grep -q 'getManifest().version' popup.js && echo "version from manifest OK"
 if grep -q 'moz-range-thumb' styles.css; then exit 1; else echo "dead CSS removed OK"; fi
 if grep -q '\.footer a' popup.css; then exit 1; else echo "dead footer rules removed OK"; fi
 
+if [ -f firefox/manifest.json ]; then
+    node --check firefox/background.js
+    python3 - <<'PYCHECK'
+import json
+import pathlib
+root = pathlib.Path('.')
+fm = json.loads((root / 'firefox' / 'manifest.json').read_text())
+assert fm['manifest_version'] == 2
+assert fm['background'].get('scripts') == ['background.js']
+assert 'service_worker' not in fm.get('background', {})
+assert 'scripting' not in fm['permissions']
+assert 'host_permissions' not in fm
+assert '*://*.youtube.com/*' in fm['permissions']
+assert 'default_popup' in fm['browser_action']
+assert isinstance(fm['web_accessible_resources'], list) and all(isinstance(r, str) for r in fm['web_accessible_resources'])
+assert fm['browser_specific_settings']['gecko']['id'].startswith('{')
+for p in list(fm['icons'].values()) + [fm['browser_action']['default_icon'], 'background.js']:
+    assert (root / 'firefox' / p).exists(), f'missing firefox/{p}'
+for p in ['content.js', 'popup.js', 'popup.html', 'popup.css', 'styles.css']:
+    assert (root / 'firefox' / p).exists(), f'missing firefox/{p}'
+print('firefox MV2 manifest OK')
+PYCHECK
+fi
+
 echo 'VERIFY PASS'

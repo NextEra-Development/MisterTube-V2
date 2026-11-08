@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MisterTube</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <img src="icons/icon48.png" alt="MisterTube" class="header-icon">
+        <div class="header-text">
+            <h1 class="header-title">MisterTube</h1>
+            <p class="header-version" id="versionText">v1.0.2</p>
+        </div>
+    </div>
+
+    <div class="toggle-container">
+        <div class="toggle-label">
+            <span>Extension Status</span>
+            <span id="statusText" class="status-text">Extension active</span>
+        </div>
+        <label class="switch">
+            <input type="checkbox" id="toggleSwitch" aria-label="Extension enabled">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="toggle-container">
+        <div class="toggle-label">
+            <span>PiP Enhancements</span>
+            <span class="toggle-description">Better Picture-in-Picture</span>
+        </div>
+        <label class="switch">
+            <input type="checkbox" id="pipToggle" aria-label="PiP enhancements">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="features">
+        <button id="clearHistory" class="feature-button">
+           <img src="icons/trash.png" alt="" style="width: 20px; vertical-align: middle; align-self: center;"><span>Clear Watch History</span>
+        </button>
+    </div>
+</div>
+<div class="footer">
+    <span class="animated-gradient-text">© 2025 Mister Bashyal</span>
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+/* MisterTube V2 - YouTube Enhancement Extension
+ * This stylesheet applies custom styling to YouTube's interface
+ * while adding UI elements for the extension functionality
+ */
+
+/* ===== VIDEO PLAYER CUSTOMIZATION ===== */
+#movie_player,
+.html5-video-container,
+.video-stream {
+    border-radius: 10px !important;
+}
+
+ytd-watch-flexy[theater] #player-theater-container {
+    border-radius: 10px !important;
+}
+
+/* ===== PROGRESS BAR ENHANCEMENTS ===== */
+.ytp-chrome-bottom {
+    border-radius: 0 0 10px 10px !important;
+}
+
+.ytp-progress-bar-container {
+    height: 8px !important;
+}
+
+.ytp-progress-bar {
+    height: 8px !important;
+    border-radius: 10px !important;
+}
+
+.ytp-scrubber-button {
+    width: 16px !important;
+    height: 16px !important;
+    border-radius: 50% !important;
+    background-color: #ff0000 !important;
+}
+
+/* ===== LAYOUT OPTIMIZATION ===== */
+::-webkit-scrollbar {
+    display: none;
+}
+
+html, body {
+    overflow-x: hidden !important;
+}
+
+/* Show mini guide renderer */
+ytd-mini-guide-renderer {
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* Hide unwanted YouTube elements */
+ytd-guide-renderer,
+ytd-rich-section-renderer,
+ytd-reel-shelf-renderer,
+#guide-content,
+#guide-inner-content,
+tp-yt-app-drawer#guide {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* ===== NOTIFICATION BUTTON POSITIONING ===== */
+ytd-mini-guide-entry-renderer:nth-of-type(4) + .ytd-notification-topbar-button-renderer {
+    margin-top: 8px !important;
+    order: 5 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.ytd-notification-topbar-button-renderer {
+    pointer-events: auto !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* ===== PICTURE-IN-PICTURE CUSTOMIZATION ===== */
+.enhanced-pip .control-item.control-button {
+    background-color: transparent !important;
+}
+
+.enhanced-pip #close,
+.enhanced-pip #unpip {
+    fill: white !important;
+    padding: 5px !important;
+    top: 2px !important;
+}
+
+.enhanced-pip #close:hover,
+.enhanced-pip #unpip:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 50% !important;
+}
+
+.enhanced-pip #controls {
+    margin: 0 !important;
+    height: 100% !important;
+    width: 100% !important;
+    transition: background-color 160ms linear;
+}
+
+.enhanced-pip #controls:hover {
+    background-color: rgba(0, 0, 0, 0.69) !important;
+}
+
+.enhanced-pip #controls-bottom-gradient {
+    display: none !important;
+}
+
+.enhanced-pip #controls-bottom {
+    display: flex;
+    flex-direction: column-reverse;
+    bottom: 5px !important;
+}
+
+.enhanced-pip #scrubber {
+    height: 5px !important;
+    transition: all 160ms linear !important;
+}
+
+.enhanced-pip #scrubber:hover {
+    height: 8px !important;
+}
+
+
