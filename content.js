@@ -26,6 +26,7 @@
 
             if (!isEnabled) return;
 
+            updateWatchClasses();
             setupUI();
             document.addEventListener('yt-navigate-finish', handleNavigate);
         });
@@ -34,8 +35,21 @@
     function handleNavigate() {
         clearTimeout(navigateTimer);
         navigateTimer = setTimeout(() => {
+            updateWatchClasses();
             setupUI();
         }, NAVIGATE_DEBOUNCE);
+    }
+
+    function updateWatchClasses() {
+        // Plain watch pages hide the (now-empty) recommendation column; playlist
+        // playback keeps it so the queue panel still shows.
+        const isWatch = location.pathname.startsWith('/watch');
+        const isPlaylist = isWatch && /[?&]list=/.test(location.search);
+        for (const target of [document.documentElement, document.body]) {
+            if (!target) continue;
+            target.classList.toggle('mistertube-watch', isWatch);
+            target.classList.toggle('mistertube-playlist', isPlaylist);
+        }
     }
 
     function setEnabledClass(enabled) {
