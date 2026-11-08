@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     const toggleSwitch = document.getElementById('toggleSwitch');
-    const pipToggle = document.getElementById('pipToggle');
     const statusText = document.getElementById('statusText');
     const versionText = document.getElementById('versionText');
     const clearHistoryBtn = document.getElementById('clearHistory');
@@ -26,14 +25,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Load saved settings
-    chrome.storage.local.get(['extensionEnabled', 'pipEnabled'], (result) => {
-        if (!toggleSwitch || !pipToggle) return;
+    chrome.storage.local.get(['extensionEnabled'], (result) => {
+        if (!toggleSwitch) return;
         if (chrome.runtime.lastError) {
             console.warn('[MisterTube]', chrome.runtime.lastError.message);
             return;
         }
         toggleSwitch.checked = result.extensionEnabled !== false;
-        pipToggle.checked = result.pipEnabled === true;
         updateStatusText(toggleSwitch.checked);
     });
 
@@ -47,19 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 updateStatusText(e.target.checked);
                 // Reload open YouTube tabs so the change takes effect
-                sendMessage({ action: 'reloadYouTubeTabs' });
-            });
-        });
-    }
-
-    // PiP toggle handler
-    if (pipToggle) {
-        pipToggle.addEventListener('change', (e) => {
-            chrome.storage.local.set({ pipEnabled: e.target.checked }, () => {
-                if (chrome.runtime.lastError) {
-                    console.warn('[MisterTube]', chrome.runtime.lastError.message);
-                    return;
-                }
                 sendMessage({ action: 'reloadYouTubeTabs' });
             });
         });

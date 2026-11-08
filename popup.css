@@ -54,12 +54,6 @@ body {
     flex-direction: column;
 }
 
-.toggle-description {
-    font-size: 12px;
-    color: #aaa;
-    margin-top: 4px;
-}
-
 .status-text {
     font-size: 12px;
     margin-top: 4px;
