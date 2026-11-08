@@ -45,7 +45,7 @@ html, body {
 }
 
 /* Show mini guide renderer */
-#ytd-mini-guide-renderer {
+ytd-mini-guide-renderer {
     display: block !important;
     visibility: visible !important;
 }
@@ -61,13 +61,6 @@ tp-yt-app-drawer#guide {
     visibility: hidden !important;
     opacity: 0 !important;
     pointer-events: none !important;
-}
-
-/* Dynamic class for DOM manipulation */
-.mister-tube-hidden {
-    display: none !important;
-    pointer-events: none !important;
-    visibility: hidden !important;
 }
 
 /* ===== NOTIFICATION BUTTON POSITIONING ===== */
@@ -133,70 +126,4 @@ ytd-mini-guide-entry-renderer:nth-of-type(4) + .ytd-notification-topbar-button-r
     height: 8px !important;
 }
 
-.enhanced-pip #scrubber::-moz-range-thumb {
-    width: 0 !important;
-    height: 0 !important;
-    border: none !important;
-}
 
-/* ===== EXTENSION UI ELEMENTS ===== */
-/* Extension Badge */
-.mister-tube-badge {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    background-color: rgba(255, 0, 0, 0.7);
-    color: white;
-    padding: 3px 6px;
-    border-radius: 4px;
-    font-size: 10px;
-    z-index: 9999;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: bold;
-}
-
-.mister-tube-badge:hover {
-    transform: scale(1.1);
-    background-color: rgba(255, 0, 0, 0.9);
-}
-
-/* Extension Buttons */
-.mister-tube-btn {
-    background: transparent;
-    border: none;
-    color: #aaa;
-    padding: 8px;
-    cursor: pointer;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 8px;
-    transition: color 0.2s, background-color 0.2s;
-}
-
-.mister-tube-btn:hover {
-    color: #fff;
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* PiP Button */
-.mister-tube-pip-btn {
-    opacity: 0.9;
-}
-
-.mister-tube-pip-btn:hover {
-    opacity: 1;
-}
-
-/* Popup Styles */
-.status-active {
-    color: #4caf50;
-    font-weight: bold;
-}
-
-.status-inactive {
-    color: #f44336;
-    font-weight: bold;
-}

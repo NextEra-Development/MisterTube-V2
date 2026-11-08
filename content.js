@@ -4,82 +4,148 @@
     const SELECTORS = {
         SEARCH_CONTAINER: 'form#search-form',
         VOICE_BUTTON: '#voice-search-button',
-        MINI_GUIDE: '#ytd-mini-guide-renderer',
         NOTIFICATION_BUTTON: '.ytd-notification-topbar-button-renderer',
         TARGET_ENTRY: 'ytd-mini-guide-entry-renderer:nth-of-type(4)',
-        HIDDEN_ELEMENTS: [
-            'ytd-guide-renderer',
-            'ytd-rich-section-renderer',
-            'ytd-reel-shelf-renderer'
-        ],
         PIP_CONTAINER: 'div#pip-container'
     };
 
     const STYLE_URL = chrome.runtime.getURL('styles.css');
-    let observerActive = false;
+    const READY_TIMEOUT = 15000;
+    const NAVIGATE_DEBOUNCE = 300;
+
+    let navigateTimer = null;
 
     function init() {
         // Check if extension is enabled
         chrome.storage.local.get(['extensionEnabled', 'pipEnabled'], (result) => {
-            // Default to enabled if not set
+            if (chrome.runtime.lastError || !result) {
+                console.warn('[MisterTube]', (chrome.runtime.lastError && chrome.runtime.lastError.message) || 'settings could not be read');
+                return;
+            }
             const isEnabled = result.extensionEnabled !== false;
 
             if (!isEnabled) return;
+
+            injectStyles();
 
             // Apply PiP enhancements if enabled
             if (result.pipEnabled) {
                 applyPipEnhancements();
             }
 
-            injectStyles();
             setupUI();
-
-            // Safely observe DOM
-            if (!observerActive) {
-                observeDOM();
-                observerActive = true;
-            }
+            document.addEventListener('yt-navigate-finish', handleNavigate);
         });
     }
 
+    function handleNavigate() {
+        clearTimeout(navigateTimer);
+        navigateTimer = setTimeout(() => {
+            setupUI();
+        }, NAVIGATE_DEBOUNCE);
+    }
+
     function applyPipEnhancements() {
-        // Use MutationObserver to watch for PiP container
-        const pipObserver = new MutationObserver(() => {
+        if (!document.body) return;
+
+        const existing = document.querySelector(SELECTORS.PIP_CONTAINER);
+        if (existing) {
+            existing.classList.add('enhanced-pip');
+            return;
+        }
+
+        let frame = null;
+        let finished = false;
+        let timeout = null;
+
+        const applyEnhancement = () => {
             const pipContainer = document.querySelector(SELECTORS.PIP_CONTAINER);
-            if (pipContainer && !pipContainer.classList.contains('enhanced-pip')) {
-                pipContainer.classList.add('enhanced-pip');
-            }
+            if (!pipContainer || pipContainer.classList.contains('enhanced-pip')) return false;
+            pipContainer.classList.add('enhanced-pip');
+            return true;
+        };
+
+        const stop = () => {
+            if (finished) return;
+            finished = true;
+            observer.disconnect();
+            clearTimeout(timeout);
+        };
+
+        const observer = new MutationObserver(() => {
+            if (frame !== null) return;
+            frame = requestAnimationFrame(() => {
+                frame = null;
+                if (applyEnhancement()) stop();
+            });
         });
 
-        pipObserver.observe(document.body, {
+        const target = document.querySelector('#movie_player') || document.body;
+        observer.observe(target, {
             childList: true,
             subtree: true
         });
 
-        // Immediate check for existing PiP container
-        const pipContainer = document.querySelector(SELECTORS.PIP_CONTAINER);
-        if (pipContainer) {
-            pipContainer.classList.add('enhanced-pip');
-        }
+        timeout = setTimeout(stop, 30000);
     }
 
     function injectStyles() {
         // Prevent duplicate style injection
-        if (!document.querySelector(`link[href="${STYLE_URL}"]`)) {
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = STYLE_URL;
-            document.head.appendChild(link);
-        }
+        if (document.querySelector(`link[href="${STYLE_URL}"]`)) return;
+
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = STYLE_URL;
+        (document.head || document.documentElement).appendChild(link);
     }
 
-    function setupUI() {
-        // Wait for UI elements to be available
-        setTimeout(() => {
+    function waitForElement(selector, timeoutMs) {
+        return new Promise((resolve) => {
+            const existing = document.querySelector(selector);
+            if (existing) {
+                resolve(existing);
+                return;
+            }
+
+            let settled = false;
+
+            const finish = (element) => {
+                if (settled) return;
+                settled = true;
+                observer.disconnect();
+                clearTimeout(timeout);
+                resolve(element);
+            };
+
+            const observer = new MutationObserver(() => {
+                const element = document.querySelector(selector);
+                if (element) finish(element);
+            });
+
+            const timeout = setTimeout(() => finish(null), timeoutMs);
+
+            observer.observe(document.documentElement, {
+                childList: true,
+                subtree: true
+            });
+        });
+    }
+
+    async function setupUI() {
+        const [searchForm, voiceTarget] = await Promise.all([
+            waitForElement(SELECTORS.SEARCH_CONTAINER, READY_TIMEOUT),
+            waitForElement(`${SELECTORS.VOICE_BUTTON}, .trash-icon-btn`, READY_TIMEOUT)
+        ]);
+
+        if (searchForm) {
             addClearHistoryButton();
+        }
+
+        if (voiceTarget) {
             replaceVoiceSearch();
-            moveNotificationButton();
-        }, 1500);
+        }
+
+        moveNotificationButton();
     }
 
     function addClearHistoryButton() {
@@ -90,26 +156,29 @@
             text: 'Clear History',
             bgColor: '#ff0000',
             className: 'clear-history-btn',
-            handler: clearHistory
+            handler: sendClearHistory
         });
         container.appendChild(button);
     }
 
     function replaceVoiceSearch() {
+        if (document.querySelector('.trash-icon-btn')) return;
+
         const voiceButton = document.querySelector(SELECTORS.VOICE_BUTTON);
-        if (!voiceButton || voiceButton.dataset.replaced) return;
+        if (!voiceButton) return;
 
         const iconButton = createButton({
             icon: 'icons/trash.png',
             className: 'trash-icon-btn',
-            handler: clearHistory
+            ariaLabel: 'Clear watch history',
+            handler: sendClearHistory
         });
         voiceButton.replaceWith(iconButton);
-        iconButton.dataset.replaced = 'true';
     }
 
-    function createButton({ text, icon, bgColor, handler, className }) {
+    function createButton({ text, icon, bgColor, handler, className, ariaLabel }) {
         const btn = document.createElement('button');
+        btn.type = 'button';
         btn.style.cssText = `
             margin-left: 10px;
             padding: 5px 10px;
@@ -125,69 +194,43 @@
             btn.className = className;
         }
 
-        if (text) btn.textContent = text;
+        if (text) {
+            btn.textContent = text;
+            btn.style.color = '#fff';
+        }
+
+        if (ariaLabel) {
+            btn.setAttribute('aria-label', ariaLabel);
+            btn.title = ariaLabel;
+        }
+
         if (icon) {
             const img = document.createElement('img');
             img.src = chrome.runtime.getURL(icon);
+            img.alt = '';
             img.style.width = '20px';
             btn.appendChild(img);
         }
 
-        btn.addEventListener('click', handler);
+        btn.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            handler(event);
+        });
+
         return btn;
     }
 
-    function clearHistory() {
-        chrome.tabs.create({ url: 'https://www.youtube.com/feed/history' }, (tab) => {
-            // Use timeout to ensure page is loaded before script execution
-            setTimeout(() => {
-                chrome.scripting.executeScript({
-                    target: { tabId: tab.id },
-                    function: () => {
-                        const clearBtn = document.querySelector('button[aria-label="Clear all watch history"]');
-                        if (clearBtn) {
-                            clearBtn.click();
-                            setTimeout(() => {
-                                const confirmBtn = document.querySelector('tp-yt-paper-button[aria-label="Clear watch history"]');
-                                if (confirmBtn) confirmBtn.click();
-                            }, 1000);
-                        }
-                    }
-                });
-            }, 2000);
-        });
-    }
-
-    function observeDOM() {
-        // Create a throttled version of the observer callback
-        let throttleTimeout = null;
-        const throttleDelay = 200;
-
-        const observer = new MutationObserver((mutations) => {
-            if (throttleTimeout) return;
-
-            throttleTimeout = setTimeout(() => {
-                // Apply element hiding via CSS classes instead of removing elements
-                document.querySelectorAll(SELECTORS.HIDDEN_ELEMENTS.join(', ')).forEach(el => {
-                    if (!el.classList.contains('youtube-enhancer-hidden')) {
-                        el.classList.add('youtube-enhancer-hidden');
-                    }
-                });
-
-                // Ensure mini guide is shown
-                const miniGuide = document.querySelector(SELECTORS.MINI_GUIDE);
-                if (miniGuide && miniGuide.style.display !== 'block') {
-                    miniGuide.style.display = 'block';
+    function sendClearHistory() {
+        try {
+            chrome.runtime.sendMessage({ action: 'clearHistory' }, () => {
+                if (chrome.runtime.lastError) {
+                    console.warn('[MisterTube]', chrome.runtime.lastError.message);
                 }
-
-                throttleTimeout = null;
-            }, throttleDelay);
-        });
-
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
+            });
+        } catch (error) {
+            console.warn('[MisterTube]', error.message);
+        }
     }
 
     function moveNotificationButton() {
@@ -199,7 +242,9 @@
             const notificationBtn = document.querySelector(SELECTORS.NOTIFICATION_BUTTON);
             const targetEntry = document.querySelector(SELECTORS.TARGET_ENTRY);
 
-            if (notificationBtn && targetEntry && !notificationBtn.classList.contains('moved-notification-btn')) {
+            if (!targetEntry || !targetEntry.parentNode) return false;
+
+            if (notificationBtn && !notificationBtn.classList.contains('moved-notification-btn')) {
                 targetEntry.parentNode.insertBefore(notificationBtn, targetEntry.nextSibling);
                 notificationBtn.classList.add('moved-notification-btn');
                 return true;

@@ -12,7 +12,7 @@
         <img src="icons/icon48.png" alt="MisterTube" class="header-icon">
         <div class="header-text">
             <h1 class="header-title">MisterTube</h1>
-            <p class="header-version">v1.0.2</p>
+            <p class="header-version" id="versionText">v1.0.2</p>
         </div>
     </div>
 
@@ -22,7 +22,7 @@
             <span id="statusText" class="status-text">Extension active</span>
         </div>
         <label class="switch">
-            <input type="checkbox" id="toggleSwitch">
+            <input type="checkbox" id="toggleSwitch" aria-label="Extension enabled">
             <span class="slider"></span>
         </label>
     </div>
@@ -33,14 +33,14 @@
             <span class="toggle-description">Better Picture-in-Picture</span>
         </div>
         <label class="switch">
-            <input type="checkbox" id="pipToggle">
+            <input type="checkbox" id="pipToggle" aria-label="PiP enhancements">
             <span class="slider"></span>
         </label>
     </div>
 
     <div class="features">
         <button id="clearHistory" class="feature-button">
-           <img src="icons/trash.png" alt="Trash Icon" style="width: 20px; vertical-align: inherit;"> <br> <span>Clear Watch History</span>
+           <img src="icons/trash.png" alt="" style="width: 20px; vertical-align: middle; align-self: center;"><span>Clear Watch History</span>
         </button>
     </div>
 </div>
