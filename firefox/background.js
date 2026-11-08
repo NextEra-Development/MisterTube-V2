@@ -21,19 +21,6 @@ chrome.runtime.onInstalled.addListener(() => {
 
 // Listen for messages from popup or content scripts
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === 'insertStyles') {
-        // Ext engine injection bypasses page CSP (link rel=stylesheet would be blocked).
-        if (!sender || !sender.tab || sender.tab.id === undefined) {
-            sendResponse({ ok: false, error: 'insertStyles needs a tab' });
-            return false;
-        }
-        chrome.tabs.insertCSS(sender.tab.id, { file: 'styles.css' }, () => {
-            const err = chrome.runtime.lastError;
-            sendResponse(err ? { ok: false, error: err.message } : { ok: true });
-        });
-        return true; // async response
-    }
-
     if (request.action === 'clearHistory') {
         clearWatchHistory((result) => sendResponse(result || { ok: false, reason: 'unknown' }));
         return true; // async response

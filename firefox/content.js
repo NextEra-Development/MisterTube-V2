@@ -8,6 +8,8 @@
         PIP_CONTAINER: 'div#pip-container'
     };
 
+    const ENABLED_CLASS = 'mistertube-enabled';
+
     const READY_TIMEOUT = 15000;
     const NAVIGATE_DEBOUNCE = 300;
 
@@ -22,9 +24,10 @@
             }
             const isEnabled = result.extensionEnabled !== false;
 
-            if (!isEnabled) return;
+            // Gate all custom styling: manifest CSS only applies under this class
+            setEnabledClass(isEnabled);
 
-            injectStyles();
+            if (!isEnabled) return;
 
             // Apply PiP enhancements if enabled
             if (result.pipEnabled) {
@@ -41,6 +44,12 @@
         navigateTimer = setTimeout(() => {
             setupUI();
         }, NAVIGATE_DEBOUNCE);
+    }
+
+    function setEnabledClass(enabled) {
+        const root = document.documentElement;
+        if (root) root.classList.toggle(ENABLED_CLASS, enabled);
+        if (document.body) document.body.classList.toggle(ENABLED_CLASS, enabled);
     }
 
     function applyPipEnhancements() {
@@ -85,20 +94,6 @@
         });
 
         timeout = setTimeout(stop, 30000);
-    }
-
-    function injectStyles() {
-        // Page-context <link href="chrome-extension://..."> is blocked by YouTube's CSP;
-        // ask the background worker to insert the stylesheet via the extension engine.
-        try {
-            chrome.runtime.sendMessage({ action: 'insertStyles' }, () => {
-                if (chrome.runtime.lastError) {
-                    console.warn('[MisterTube]', chrome.runtime.lastError.message);
-                }
-            });
-        } catch (error) {
-            console.warn('[MisterTube]', error && error.message ? error.message : error);
-        }
     }
 
     function waitForElement(selector, timeoutMs) {

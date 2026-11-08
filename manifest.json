@@ -28,7 +28,10 @@
       "js": [
         "content.js"
       ],
-      "run_at": "document_end"
+      "run_at": "document_end",
+      "css": [
+        "styles.css"
+      ]
     }
   ],
   "web_accessible_resources": [

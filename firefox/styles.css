@@ -1,34 +1,35 @@
 /* MisterTube V2 - YouTube Enhancement Extension
- * This stylesheet applies custom styling to YouTube's interface
- * while adding UI elements for the extension functionality
+ * Gated behind the extension on/off switch: every rule is scoped to the
+ * `mistertube-enabled` class that content.js toggles on <html> and <body>
+ * when the extension is enabled (same pattern as MisterTube-V3).
  */
 
 /* ===== VIDEO PLAYER CUSTOMIZATION ===== */
-#movie_player,
-.html5-video-container,
-.video-stream {
+body.mistertube-enabled #movie_player,
+body.mistertube-enabled .html5-video-container,
+body.mistertube-enabled .video-stream {
     border-radius: 10px !important;
 }
 
-ytd-watch-flexy[theater] #player-theater-container {
+body.mistertube-enabled ytd-watch-flexy[theater] #player-theater-container {
     border-radius: 10px !important;
 }
 
 /* ===== PROGRESS BAR ENHANCEMENTS ===== */
-.ytp-chrome-bottom {
+body.mistertube-enabled .ytp-chrome-bottom {
     border-radius: 0 0 10px 10px !important;
 }
 
-.ytp-progress-bar-container {
+body.mistertube-enabled .ytp-progress-bar-container {
     height: 8px !important;
 }
 
-.ytp-progress-bar {
+body.mistertube-enabled .ytp-progress-bar {
     height: 8px !important;
     border-radius: 10px !important;
 }
 
-.ytp-scrubber-button {
+body.mistertube-enabled .ytp-scrubber-button {
     width: 16px !important;
     height: 16px !important;
     border-radius: 50% !important;
@@ -36,26 +37,27 @@ ytd-watch-flexy[theater] #player-theater-container {
 }
 
 /* ===== LAYOUT OPTIMIZATION ===== */
-::-webkit-scrollbar {
+body.mistertube-enabled ::-webkit-scrollbar {
     display: none;
 }
 
-html, body {
+html.mistertube-enabled,
+body.mistertube-enabled {
     overflow-x: hidden !important;
 }
 
 /* Hide unwanted YouTube elements (the mini-guide rail included) */
-ytd-guide-renderer,
-ytd-rich-section-renderer,
-ytd-reel-shelf-renderer,
-ytd-rich-shelf-renderer,
-ytd-mini-guide-renderer,
-#guide,
-#contentContainer,
-#contents-container > .ytd-rich-shelf-renderer.style-scope,
-#guide-content,
-#guide-inner-content,
-tp-yt-app-drawer#guide {
+body.mistertube-enabled ytd-guide-renderer,
+body.mistertube-enabled ytd-rich-section-renderer,
+body.mistertube-enabled ytd-reel-shelf-renderer,
+body.mistertube-enabled ytd-rich-shelf-renderer,
+body.mistertube-enabled ytd-mini-guide-renderer,
+body.mistertube-enabled #guide,
+body.mistertube-enabled #contentContainer,
+body.mistertube-enabled #contents-container > .ytd-rich-shelf-renderer.style-scope,
+body.mistertube-enabled #guide-content,
+body.mistertube-enabled #guide-inner-content,
+body.mistertube-enabled tp-yt-app-drawer#guide {
     display: none !important;
     visibility: hidden !important;
     opacity: 0 !important;
@@ -64,65 +66,63 @@ tp-yt-app-drawer#guide {
 
 /* The rail is hidden along with the drawer (both position:fixed), so pin the
    feed to the full width; YouTube would otherwise reserve 72px for the rail. */
-ytd-page-manager {
+body.mistertube-enabled ytd-page-manager {
     margin-left: 0 !important;
 }
 
 /* ===== PICTURE-IN-PICTURE CUSTOMIZATION ===== */
-.enhanced-pip .control-item.control-button {
+body.mistertube-enabled .enhanced-pip .control-item.control-button {
     background-color: transparent !important;
 }
 
-.enhanced-pip #close,
-.enhanced-pip #unpip {
+body.mistertube-enabled .enhanced-pip #close,
+body.mistertube-enabled .enhanced-pip #unpip {
     fill: white !important;
     padding: 5px !important;
     top: 2px !important;
 }
 
-.enhanced-pip #close:hover,
-.enhanced-pip #unpip:hover {
+body.mistertube-enabled .enhanced-pip #close:hover,
+body.mistertube-enabled .enhanced-pip #unpip:hover {
     background-color: rgba(255, 255, 255, 0.1) !important;
     border-radius: 50% !important;
 }
 
-.enhanced-pip #controls {
+body.mistertube-enabled .enhanced-pip #controls {
     margin: 0 !important;
     height: 100% !important;
     width: 100% !important;
     transition: background-color 160ms linear;
 }
 
-.enhanced-pip #controls:hover {
+body.mistertube-enabled .enhanced-pip #controls:hover {
     background-color: rgba(0, 0, 0, 0.69) !important;
 }
 
-.enhanced-pip #controls-bottom-gradient {
+body.mistertube-enabled .enhanced-pip #controls-bottom-gradient {
     display: none !important;
 }
 
-.enhanced-pip #controls-bottom {
+body.mistertube-enabled .enhanced-pip #controls-bottom {
     display: flex;
     flex-direction: column-reverse;
     bottom: 5px !important;
 }
 
-.enhanced-pip #scrubber {
+body.mistertube-enabled .enhanced-pip #scrubber {
     height: 5px !important;
     transition: all 160ms linear !important;
 }
 
-.enhanced-pip #scrubber:hover {
+body.mistertube-enabled .enhanced-pip #scrubber:hover {
     height: 8px !important;
 }
-
-
 
 /* ===== WATCH PAGE: keep playlist panel, hide recommendations ===== */
 /* Recommendations (and their loading skeletons) live in the #items track of
    the secondary column; the playlist queue panel is a sibling that stays. */
-ytd-watch-next-secondary-results-renderer #items,
-ytd-watch-next-feed-filter-chips-renderer {
+body.mistertube-enabled ytd-watch-next-secondary-results-renderer #items,
+body.mistertube-enabled ytd-watch-next-feed-filter-chips-renderer {
     display: none !important;
     visibility: hidden !important;
     opacity: 0 !important;

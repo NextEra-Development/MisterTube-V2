@@ -18,24 +18,23 @@ for f in ['background.js', 'content.js', 'popup.js', 'manifest.json', 'popup.htm
     assert b'\x00' not in data, f'NUL byte in {f}'
 print('no NUL bytes')
 
-# Manifest sanity
+# Manifest sanity: MisterTube-V3 pattern — styles are manifest-registered (CSP-exempt)
 m = json.loads((root / 'manifest.json').read_text())
+assert m['content_scripts'][0].get('css') == ['styles.css'], 'styles.css must be declared in content_scripts (CSP-exempt)'
 assert set(m['permissions']) == {'storage', 'scripting'}, f"unexpected permissions: {m['permissions']}"
-assert 'css' not in m['content_scripts'][0], 'content_scripts must not inject styles.css'
+assert 'styles.css' not in m['web_accessible_resources'][0]['resources'], 'styles.css is registered via content_scripts, not page-linked'
+assert m['background']['service_worker'] == 'background.js'
 for p in list(m['icons'].values()) + [m['action']['default_icon'], 'icons/trash.png']:
     assert (root / p).exists(), f'missing {p}'
-assert 'styles.css' not in m['web_accessible_resources'][0]['resources'], 'styles.css must be engine-inserted via scripting.insertCSS, not page-linked'
-assert m['background']['service_worker'] == 'background.js'
 print('manifest OK')
 PY
 
 grep -q "btn.type = 'button'" content.js && echo "button type OK"
 grep -q 'yt-navigate-finish' content.js && echo "SPA re-run OK"
 grep -q 'onRemoved' background.js && echo "listener cleanup OK"
-grep -q 'insertStyles' background.js && echo "MV3 engine CSS injection OK"
-grep -q 'insertStyles' firefox/background.js && echo "MV2 engine CSS injection OK"
-! grep -q 'getURL(..styles.css..)' content.js && echo "no styles.css from page context OK"
 grep -q 'getManifest().version' popup.js && echo "version from manifest OK"
+grep -q 'mistertube-enabled' content.js && echo "enabled-class toggle OK"
+grep -q 'mistertube-enabled' styles.css && echo "CSS gated to enabled class OK"
 if grep -q 'moz-range-thumb' styles.css; then exit 1; else echo "dead CSS removed OK"; fi
 if grep -q '\.footer a' popup.css; then exit 1; else echo "dead footer rules removed OK"; fi
 
@@ -47,8 +46,9 @@ import pathlib
 root = pathlib.Path('.')
 fm = json.loads((root / 'firefox' / 'manifest.json').read_text())
 assert fm['manifest_version'] == 2
-assert fm['background'].get('scripts') == ['background.js']
+assert fm['background'].get('scripts') == ['background.js'], 'MV2 uses background scripts'
 assert 'service_worker' not in fm.get('background', {})
+assert fm['content_scripts'][0].get('css') == ['styles.css'], 'MV2 styles must be declared in content_scripts (CSP-exempt)'
 assert 'scripting' not in fm['permissions']
 assert 'host_permissions' not in fm
 assert '*://*.youtube.com/*' in fm['permissions']
