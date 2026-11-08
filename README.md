@@ -41,6 +41,8 @@ Manifest V2 builds are not installable from addons.mozilla.org until this extens
 > Temporary add-ons are removed when Firefox restarts. For a permanent install, sign a `.xpi` with your own keys and install it permanently, or install from the release page if/when one is published.
 >
 > Works in **Firefox ≥ 57** and Manifest V2-compatible forks.
+>
+> Looking for the Chromium / Manifest V3 edition? That lives in the sibling repository: [github.com/NextEra-Development/MisterTube-V3](https://github.com/NextEra-Development/MisterTube-V3). This repository is Manifest V2 only.
 
 ---
 
