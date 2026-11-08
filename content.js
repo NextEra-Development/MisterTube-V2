@@ -2,10 +2,7 @@
     'use strict';
 
     const SELECTORS = {
-        // Live YouTube removed form#search-form; the current search UI's row is .ytSearchboxComponentInputBox (yt-searchbox's internal form row)
-        SEARCH_CONTAINER: '.ytSearchboxComponentInputBox, form#search-form, form.ytSearchboxComponentSearchForm',
-        VOICE_BUTTON: '#voice-search-button',
-        PIP_CONTAINER: 'div#pip-container'
+        VOICE_BUTTON: '#voice-search-button'
     };
 
     const ENABLED_CLASS = 'mistertube-enabled';
@@ -17,7 +14,7 @@
 
     function init() {
         // Check if extension is enabled
-        chrome.storage.local.get(['extensionEnabled', 'pipEnabled'], (result) => {
+        chrome.storage.local.get(['extensionEnabled'], (result) => {
             if (chrome.runtime.lastError || !result) {
                 console.warn('[MisterTube]', (chrome.runtime.lastError && chrome.runtime.lastError.message) || 'settings could not be read');
                 return;
@@ -28,11 +25,6 @@
             setEnabledClass(isEnabled);
 
             if (!isEnabled) return;
-
-            // Apply PiP enhancements if enabled
-            if (result.pipEnabled) {
-                applyPipEnhancements();
-            }
 
             setupUI();
             document.addEventListener('yt-navigate-finish', handleNavigate);
@@ -50,50 +42,6 @@
         const root = document.documentElement;
         if (root) root.classList.toggle(ENABLED_CLASS, enabled);
         if (document.body) document.body.classList.toggle(ENABLED_CLASS, enabled);
-    }
-
-    function applyPipEnhancements() {
-        if (!document.body) return;
-
-        const existing = document.querySelector(SELECTORS.PIP_CONTAINER);
-        if (existing) {
-            existing.classList.add('enhanced-pip');
-            return;
-        }
-
-        let frame = null;
-        let finished = false;
-        let timeout = null;
-
-        const applyEnhancement = () => {
-            const pipContainer = document.querySelector(SELECTORS.PIP_CONTAINER);
-            if (!pipContainer || pipContainer.classList.contains('enhanced-pip')) return false;
-            pipContainer.classList.add('enhanced-pip');
-            return true;
-        };
-
-        const stop = () => {
-            if (finished) return;
-            finished = true;
-            observer.disconnect();
-            clearTimeout(timeout);
-        };
-
-        const observer = new MutationObserver(() => {
-            if (frame !== null) return;
-            frame = requestAnimationFrame(() => {
-                frame = null;
-                if (applyEnhancement()) stop();
-            });
-        });
-
-        const target = document.querySelector('#movie_player') || document.body;
-        observer.observe(target, {
-            childList: true,
-            subtree: true
-        });
-
-        timeout = setTimeout(stop, 30000);
     }
 
     function waitForElement(selector, timeoutMs) {
@@ -129,32 +77,8 @@
     }
 
     async function setupUI() {
-        const [searchForm, voiceTarget] = await Promise.all([
-            waitForElement(SELECTORS.SEARCH_CONTAINER, READY_TIMEOUT),
-            waitForElement(`${SELECTORS.VOICE_BUTTON}, .trash-icon-btn`, READY_TIMEOUT)
-        ]);
-
-        if (searchForm) {
-            addClearHistoryButton();
-        }
-
-        if (voiceTarget) {
-            replaceVoiceSearch();
-        }
-
-    }
-
-    function addClearHistoryButton() {
-        const container = document.querySelector(SELECTORS.SEARCH_CONTAINER);
-        if (!container || container.querySelector('.clear-history-btn')) return;
-
-        const button = createButton({
-            text: 'Clear History',
-            bgColor: '#ff0000',
-            className: 'clear-history-btn',
-            handler: sendClearHistory
-        });
-        container.appendChild(button);
+        await waitForElement(`${SELECTORS.VOICE_BUTTON}, .trash-icon-btn`, READY_TIMEOUT);
+        replaceVoiceSearch();
     }
 
     function replaceVoiceSearch() {

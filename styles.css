@@ -70,54 +70,6 @@ body.mistertube-enabled ytd-page-manager {
     margin-left: 0 !important;
 }
 
-/* ===== PICTURE-IN-PICTURE CUSTOMIZATION ===== */
-body.mistertube-enabled .enhanced-pip .control-item.control-button {
-    background-color: transparent !important;
-}
-
-body.mistertube-enabled .enhanced-pip #close,
-body.mistertube-enabled .enhanced-pip #unpip {
-    fill: white !important;
-    padding: 5px !important;
-    top: 2px !important;
-}
-
-body.mistertube-enabled .enhanced-pip #close:hover,
-body.mistertube-enabled .enhanced-pip #unpip:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    border-radius: 50% !important;
-}
-
-body.mistertube-enabled .enhanced-pip #controls {
-    margin: 0 !important;
-    height: 100% !important;
-    width: 100% !important;
-    transition: background-color 160ms linear;
-}
-
-body.mistertube-enabled .enhanced-pip #controls:hover {
-    background-color: rgba(0, 0, 0, 0.69) !important;
-}
-
-body.mistertube-enabled .enhanced-pip #controls-bottom-gradient {
-    display: none !important;
-}
-
-body.mistertube-enabled .enhanced-pip #controls-bottom {
-    display: flex;
-    flex-direction: column-reverse;
-    bottom: 5px !important;
-}
-
-body.mistertube-enabled .enhanced-pip #scrubber {
-    height: 5px !important;
-    transition: all 160ms linear !important;
-}
-
-body.mistertube-enabled .enhanced-pip #scrubber:hover {
-    height: 8px !important;
-}
-
 /* ===== WATCH PAGE: keep playlist panel, hide recommendations ===== */
 /* Recommendations (and their loading skeletons) live in the #items track of
    the secondary column; the playlist queue panel is a sibling that stays. */
