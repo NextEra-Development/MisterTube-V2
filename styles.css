@@ -80,3 +80,19 @@ body.mistertube-enabled ytd-watch-next-feed-filter-chips-renderer {
     opacity: 0 !important;
     pointer-events: none !important;
 }
+
+/* ===== WATCH PAGE LAYOUT: plain watch, center the player ===== */
+/* Without playlist playback, hide the now-empty recommendation column so the
+   player centers; the playlist queue panel lives inside it when playing a playlist. */
+body.mistertube-enabled:not(.mistertube-playlist) ytd-watch-next-secondary-results-renderer,
+body.mistertube-enabled:not(.mistertube-playlist) ytd-watch-flexy #secondary,
+body.mistertube-enabled:not(.mistertube-playlist) #secondary {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+body.mistertube-enabled ytd-watch-flexy {
+    justify-content: center !important;
+}
