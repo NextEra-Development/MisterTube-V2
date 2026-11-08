@@ -135,3 +135,14 @@ ytd-mini-guide-entry-renderer:nth-of-type(4) + .ytd-notification-topbar-button-r
 }
 
 
+
+/* ===== WATCH PAGE: keep playlist panel, hide recommendations ===== */
+/* Recommendations (and their loading skeletons) live in the #items track of
+   the secondary column; the playlist queue panel is a sibling that stays. */
+ytd-watch-next-secondary-results-renderer #items,
+ytd-watch-next-feed-filter-chips-renderer {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
