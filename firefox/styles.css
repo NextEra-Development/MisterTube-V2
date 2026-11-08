@@ -54,6 +54,10 @@ ytd-mini-guide-renderer {
 ytd-guide-renderer,
 ytd-rich-section-renderer,
 ytd-reel-shelf-renderer,
+ytd-rich-shelf-renderer,
+#guide,
+#contentContainer,
+#contents-container > .ytd-rich-shelf-renderer.style-scope,
 #guide-content,
 #guide-inner-content,
 tp-yt-app-drawer#guide {
@@ -62,6 +66,10 @@ tp-yt-app-drawer#guide {
     opacity: 0 !important;
     pointer-events: none !important;
 }
+
+/* The drawer (#guide) is position:fixed and off-canvas, so hiding it reserves
+   no layout space. The 72px left offset on the feed is the mini-guide rail
+   reservation and is intentional. */
 
 /* ===== NOTIFICATION BUTTON POSITIONING ===== */
 ytd-mini-guide-entry-renderer:nth-of-type(4) + .ytd-notification-topbar-button-renderer {
